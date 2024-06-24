@@ -68,7 +68,7 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
-import { useSupabaseAuth } from "@/integrations/supabase/auth.jsx";
+import { useSupabaseAuth } from "@/integrations/supabase/auth/index.jsx";
 
 const SharedLayout = () => {
   const navigate = useNavigate();
