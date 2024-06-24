@@ -43,10 +43,18 @@ const Index = () => {
   const deleteProject = useDeleteProject();
   const [selectedProject, setSelectedProject] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [projectStatuses, setProjectStatuses] = useState([]);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(projectSchema),
   });
+
+  useEffect(() => {
+    if (projects) {
+      const statuses = Array.from(new Set(projects.map(project => project.project_status)));
+      setProjectStatuses(statuses);
+    }
+  }, [projects]);
 
   const onSubmit = async (data) => {
     if (selectedProject) {
@@ -75,13 +83,12 @@ const Index = () => {
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading projects: {error.message}</div>;
 
-  const projectStatuses = ["all", "active", "draft", "archived"];
-
   return (
     <div className="p-4">
       <Tabs defaultValue="all">
         <div className="flex items-center">
           <TabsList>
+            <TabsTrigger value="all">All</TabsTrigger>
             {projectStatuses.map(status => (
               <TabsTrigger key={status} value={status}>
                 {status.charAt(0).toUpperCase() + status.slice(1)}
