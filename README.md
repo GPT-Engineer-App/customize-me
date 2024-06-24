@@ -1,38 +1,27 @@
-# custom-start
+# Bare Bones App
 
-Create a bare-bones application that I can modify and build on.
+This is a minimal web application with basic HTML, CSS, and JavaScript files.
 
-## Collaborate with GPT Engineer
+## How to Run
 
-This is a [gptengineer.app](https://gptengineer.app)-synced repository 🌟🤖
+1. Clone the repository:
+    ```sh
+    git clone <repository-url>
+    ```
 
-Changes made via gptengineer.app will be committed to this repo.
+2. Navigate to the project directory:
+    ```sh
+    cd <project-directory>
+    ```
 
-If you clone this repo and push changes, you will have them reflected in the GPT Engineer UI.
+3. Open the `public/index.html` file in your web browser.
 
-## Tech stack
+## How to Modify
 
-This project is built with React with shadcn-ui and Tailwind CSS.
+- **HTML**: Modify the `public/index.html` file to change the structure of the web page.
+- **CSS**: Modify the `public/styles.css` file to change the styling of the web page.
+- **JavaScript**: Modify the `public/script.js` file to add or change the behavior of the web page.
 
-- Vite
-- React
-- shadcn-ui
-- Tailwind CSS
+## License
 
-## Setup
-
-```sh
-git clone https://github.com/GPT-Engineer-App/custom-start.git
-cd custom-start
-npm i
-```
-
-```sh
-npm run dev
-```
-
-This will run a dev server with auto reloading and an instant preview.
-
-## Requirements
-
-- Node.js & npm - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+This project is licensed under the MIT License.
