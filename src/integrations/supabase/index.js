@@ -19,146 +19,53 @@ const fromSupabase = async (query) => {
 
 /* supabase integration types
 
-### profile
+// EXAMPLE TYPES SECTION
+// DO NOT USE TYPESCRIPT
 
-| name       | type        | format | required |
-|------------|-------------|--------|----------|
-| id         | uuid        | string | true     |
-| created_at | timestamptz | string | true     |
-| user       | uuid        | string | false    |
-| email      | text        | string | false    |
-| first_name | text        | string | false    |
-| last_name  | text        | string | false    |
+### foos
 
-### project
+| name    | type | format | required |
+|---------|------|--------|----------|
+| id      | int8 | number | true     |
+| title   | text | string | true     |
+| date    | date | string | true     |
 
-| name                | type        | format | required |
-|---------------------|-------------|--------|----------|
-| project_id          | int4        | number | true     |
-| project_name        | varchar     | string | true     |
-| project_description | text        | string | false    |
-| start_date          | date        | string | true     |
-| end_date            | date        | string | false    |
-| project_status      | varchar     | string | true     |
+### bars
 
+| name    | type | format | required |
+|---------|------|--------|----------|
+| id      | int8 | number | true     |
+| foo_id  | int8 | number | true     |  // foreign key to foos
+	
 */
 
-export const useProfiles = () => useQuery({
-    queryKey: ['profiles'],
-    queryFn: () => fromSupabase(supabase.from('profile').select('*')),
-});
+// Example hook for models
 
-export const useProfile = (id) => useQuery({
-    queryKey: ['profile', id],
-    queryFn: () => fromSupabase(supabase.from('profile').select('*').eq('id', id).single()),
-});
-
-export const useAddProfile = () => {
+export const useFoo = ()=> useQuery({
+    queryKey: ['foos'],
+    queryFn: fromSupabase(supabase.from('foos')),
+})
+export const useAddFoo = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (newProfile) => fromSupabase(supabase.from('profile').insert([newProfile])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('profiles');
+        mutationFn: (newFoo)=> fromSupabase(supabase.from('foos').insert([{ title: newFoo.title }])),
+        onSuccess: ()=> {
+            queryClient.invalidateQueries('foos');
         },
     });
 };
 
-export const useUpdateProfile = () => {
+export const useBar = ()=> useQuery({
+    queryKey: ['bars'],
+    queryFn: fromSupabase(supabase.from('bars')),
+})
+export const useAddBar = () => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (updatedProfile) => fromSupabase(supabase.from('profile').update(updatedProfile).eq('id', updatedProfile.id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('profiles');
+        mutationFn: (newBar)=> fromSupabase(supabase.from('bars').insert([{ foo_id: newBar.foo_id }])),
+        onSuccess: ()=> {
+            queryClient.invalidateQueries('bars');
         },
     });
 };
 
-export const useDeleteProfile = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id) => fromSupabase(supabase.from('profile').delete().eq('id', id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('profiles');
-        },
-    });
-};
-
-export const useProjects = () => useQuery({
-    queryKey: ['projects'],
-    queryFn: () => fromSupabase(supabase.from('project').select('*')),
-});
-
-export const useProject = (id) => useQuery({
-    queryKey: ['project', id],
-    queryFn: () => fromSupabase(supabase.from('project').select('*').eq('project_id', id).single()),
-});
-
-export const useAddProject = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newProject) => fromSupabase(supabase.from('project').insert([newProject])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('projects');
-        },
-    });
-};
-
-export const useUpdateProject = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (updatedProject) => fromSupabase(supabase.from('project').update(updatedProject).eq('project_id', updatedProject.project_id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('projects');
-        },
-    });
-};
-
-export const useDeleteProject = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id) => fromSupabase(supabase.from('project').delete().eq('project_id', id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('projects');
-        },
-    });
-};
-
-export const useUsers = () => useQuery({
-    queryKey: ['users'],
-    queryFn: () => fromSupabase(supabase.from('users').select('*')),
-});
-
-export const useUser = (id) => useQuery({
-    queryKey: ['user', id],
-    queryFn: () => fromSupabase(supabase.from('users').select('*').eq('id', id).single()),
-});
-
-export const useAddUser = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (newUser) => fromSupabase(supabase.from('users').insert([newUser])),
-        onSuccess: () => {
-            queryClient.invalidateQueries('users');
-        },
-    });
-};
-
-export const useUpdateUser = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (updatedUser) => fromSupabase(supabase.from('users').update(updatedUser).eq('id', updatedUser.id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('users');
-        },
-    });
-};
-
-export const useDeleteUser = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-        mutationFn: (id) => fromSupabase(supabase.from('users').delete().eq('id', id)),
-        onSuccess: () => {
-            queryClient.invalidateQueries('users');
-        },
-    });
-};
