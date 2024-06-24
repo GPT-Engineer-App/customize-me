@@ -3,6 +3,8 @@ import Index from "./pages/Index.jsx";
 import SharedLayout from "./components/SharedLayout.jsx";
 import Login from "./pages/Login.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
+import Profile from "./pages/Profile.jsx";
+import Users from "./pages/Users.jsx";
 
 function App() {
   return (
@@ -20,6 +22,24 @@ function App() {
             }
           />
         </Route>
+        <Route
+          exact
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          exact
+          path="/users"
+          element={
+            <ProtectedRoute>
+              <Users />
+            </ProtectedRoute>
+          }
+        />
       </Routes>
     </Router>
   );
