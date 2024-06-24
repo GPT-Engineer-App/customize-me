@@ -188,6 +188,56 @@ const Index = () => {
             </Dialog>
           </div>
         </div>
+        <TabsContent value="all">
+          <Card x-chunk="dashboard-06-chunk-0">
+            <CardHeader>
+              <CardTitle>All Projects</CardTitle>
+              <CardDescription>
+                Manage all your projects and view their details.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Project Name</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>End Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {projects.map((project) => (
+                    <TableRow key={project.project_id}>
+                      <TableCell>{project.project_name}</TableCell>
+                      <TableCell>{project.project_description}</TableCell>
+                      <TableCell>{project.start_date}</TableCell>
+                      <TableCell>{project.end_date}</TableCell>
+                      <TableCell>{project.project_status}</TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button size="icon" variant="outline" onClick={() => handleEdit(project)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button size="icon" variant="outline" onClick={() => handleDelete(project.project_id)}>
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+            <CardFooter>
+              <div className="text-xs text-muted-foreground">
+                Showing <strong>{projects.length}</strong> projects
+              </div>
+            </CardFooter>
+          </Card>
+        </TabsContent>
         {projectStatuses.map(status => (
           <TabsContent key={status} value={status}>
             <Card x-chunk="dashboard-06-chunk-0">
