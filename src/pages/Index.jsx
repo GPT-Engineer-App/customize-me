@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useProjects, useAddProject, useUpdateProject, useDeleteProject } from '@/integrations/supabase/index.js';
-import { PlusCircle, ListFilter, File, Edit, Trash, Archive, Users, Bell } from 'lucide-react';
+import { PlusCircle, ListFilter, File, Edit, Trash } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -27,7 +27,6 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { Progress } from "@/components/ui/progress";
 
 const projectSchema = z.object({
   project_name: z.string().min(1, "Project name is required"),
@@ -35,8 +34,6 @@ const projectSchema = z.object({
   start_date: z.string().min(1, "Start date is required"),
   end_date: z.string().optional(),
   project_status: z.string().min(1, "Project status is required"),
-  project_category: z.string().optional(),
-  project_progress: z.number().min(0).max(100).optional(),
 });
 
 const Index = () => {
@@ -47,9 +44,6 @@ const Index = () => {
   const [selectedProject, setSelectedProject] = useState(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [projectStatuses, setProjectStatuses] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
-  const [sortOption, setSortOption] = useState('name');
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(projectSchema),
@@ -86,35 +80,6 @@ const Index = () => {
     toast.success("Project deleted successfully");
   };
 
-  const handleArchive = async (project) => {
-    await updateProject.mutateAsync({ ...project, project_status: 'archived' });
-    toast.success("Project archived successfully");
-  };
-
-  const handleCollaborators = (project) => {
-    // Logic to manage collaborators
-    toast.success("Manage collaborators for project: " + project.project_name);
-  };
-
-  const handleNotifications = (project) => {
-    // Logic to manage notifications and reminders
-    toast.success("Manage notifications for project: " + project.project_name);
-  };
-
-  const filteredProjects = projects.filter(project => 
-    project.project_name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-    (selectedCategory === '' || project.project_category === selectedCategory)
-  );
-
-  const sortedProjects = filteredProjects.sort((a, b) => {
-    if (sortOption === 'name') {
-      return a.project_name.localeCompare(b.project_name);
-    } else if (sortOption === 'date') {
-      return new Date(a.start_date) - new Date(b.start_date);
-    }
-    return 0;
-  });
-
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading projects: {error.message}</div>;
 
@@ -131,13 +96,6 @@ const Index = () => {
             ))}
           </TabsList>
           <div className="ml-auto flex items-center gap-2">
-            <Input
-              type="search"
-              placeholder="Search projects..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[336px]"
-            />
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="outline" size="sm" className="h-8 gap-1">
@@ -148,38 +106,23 @@ const Index = () => {
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
+                <DropdownMenuLabel>Filter by</DropdownMenuLabel>
                 <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked={selectedCategory === ''} onClick={() => setSelectedCategory('')}>
-                  All
+                <DropdownMenuCheckboxItem checked>
+                  Active
                 </DropdownMenuCheckboxItem>
-                {Array.from(new Set(projects.map(project => project.project_category))).map(category => (
-                  <DropdownMenuCheckboxItem key={category} checked={selectedCategory === category} onClick={() => setSelectedCategory(category)}>
-                    {category}
-                  </DropdownMenuCheckboxItem>
-                ))}
-              </DropdownMenuContent>
-            </DropdownMenu>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button variant="outline" size="sm" className="h-8 gap-1">
-                  <File className="h-3.5 w-3.5" />
-                  <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-                    Sort
-                  </span>
-                </Button>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="end">
-                <DropdownMenuLabel>Sort by</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuCheckboxItem checked={sortOption === 'name'} onClick={() => setSortOption('name')}>
-                  Name
-                </DropdownMenuCheckboxItem>
-                <DropdownMenuCheckboxItem checked={sortOption === 'date'} onClick={() => setSortOption('date')}>
-                  Start Date
+                <DropdownMenuCheckboxItem>Draft</DropdownMenuCheckboxItem>
+                <DropdownMenuCheckboxItem>
+                  Archived
                 </DropdownMenuCheckboxItem>
               </DropdownMenuContent>
             </DropdownMenu>
+            <Button size="sm" variant="outline" className="h-8 gap-1">
+              <File className="h-3.5 w-3.5" />
+              <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
+                Export
+              </span>
+            </Button>
             <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
                 <Button size="sm" className="h-8 gap-1" onClick={() => setIsDialogOpen(true)}>
@@ -233,20 +176,6 @@ const Index = () => {
                       <Input id="project_status" {...register("project_status")} className="col-span-3" />
                       {errors.project_status && <p className="col-span-4 text-red-500">{errors.project_status.message}</p>}
                     </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="project_category" className="text-right">
-                        Project Category
-                      </Label>
-                      <Input id="project_category" {...register("project_category")} className="col-span-3" />
-                      {errors.project_category && <p className="col-span-4 text-red-500">{errors.project_category.message}</p>}
-                    </div>
-                    <div className="grid grid-cols-4 items-center gap-4">
-                      <Label htmlFor="project_progress" className="text-right">
-                        Project Progress
-                      </Label>
-                      <Input id="project_progress" type="number" {...register("project_progress")} className="col-span-3" />
-                      {errors.project_progress && <p className="col-span-4 text-red-500">{errors.project_progress.message}</p>}
-                    </div>
                   </div>
                   <DialogFooter>
                     <Button type="submit">{selectedProject ? "Update" : "Add"}</Button>
@@ -276,23 +205,17 @@ const Index = () => {
                     <TableHead>Start Date</TableHead>
                     <TableHead>End Date</TableHead>
                     <TableHead>Status</TableHead>
-                    <TableHead>Category</TableHead>
-                    <TableHead>Progress</TableHead>
                     <TableHead>Actions</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {sortedProjects.map((project) => (
+                  {projects.map((project) => (
                     <TableRow key={project.project_id}>
                       <TableCell>{project.project_name}</TableCell>
                       <TableCell>{project.project_description}</TableCell>
                       <TableCell>{project.start_date}</TableCell>
                       <TableCell>{project.end_date}</TableCell>
                       <TableCell>{project.project_status}</TableCell>
-                      <TableCell>{project.project_category}</TableCell>
-                      <TableCell>
-                        <Progress value={project.project_progress} />
-                      </TableCell>
                       <TableCell>
                         <div className="flex space-x-2">
                           <Button size="icon" variant="outline" onClick={() => handleEdit(project)}>
@@ -300,15 +223,6 @@ const Index = () => {
                           </Button>
                           <Button size="icon" variant="outline" onClick={() => handleDelete(project.project_id)}>
                             <Trash className="h-4 w-4" />
-                          </Button>
-                          <Button size="icon" variant="outline" onClick={() => handleArchive(project)}>
-                            <Archive className="h-4 w-4" />
-                          </Button>
-                          <Button size="icon" variant="outline" onClick={() => handleCollaborators(project)}>
-                            <Users className="h-4 w-4" />
-                          </Button>
-                          <Button size="icon" variant="outline" onClick={() => handleNotifications(project)}>
-                            <Bell className="h-4 w-4" />
                           </Button>
                         </div>
                       </TableCell>
@@ -319,7 +233,7 @@ const Index = () => {
             </CardContent>
             <CardFooter>
               <div className="text-xs text-muted-foreground">
-                Showing <strong>{sortedProjects.length}</strong> projects
+                Showing <strong>{projects.length}</strong> projects
               </div>
             </CardFooter>
           </Card>
@@ -342,13 +256,11 @@ const Index = () => {
                       <TableHead>Start Date</TableHead>
                       <TableHead>End Date</TableHead>
                       <TableHead>Status</TableHead>
-                      <TableHead>Category</TableHead>
-                      <TableHead>Progress</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody>
-                    {sortedProjects
+                    {projects
                       .filter(project => status === "all" || project.project_status === status)
                       .map((project) => (
                         <TableRow key={project.project_id}>
@@ -357,10 +269,6 @@ const Index = () => {
                           <TableCell>{project.start_date}</TableCell>
                           <TableCell>{project.end_date}</TableCell>
                           <TableCell>{project.project_status}</TableCell>
-                          <TableCell>{project.project_category}</TableCell>
-                          <TableCell>
-                            <Progress value={project.project_progress} />
-                          </TableCell>
                           <TableCell>
                             <div className="flex space-x-2">
                               <Button size="icon" variant="outline" onClick={() => handleEdit(project)}>
@@ -368,15 +276,6 @@ const Index = () => {
                               </Button>
                               <Button size="icon" variant="outline" onClick={() => handleDelete(project.project_id)}>
                                 <Trash className="h-4 w-4" />
-                              </Button>
-                              <Button size="icon" variant="outline" onClick={() => handleArchive(project)}>
-                                <Archive className="h-4 w-4" />
-                              </Button>
-                              <Button size="icon" variant="outline" onClick={() => handleCollaborators(project)}>
-                                <Users className="h-4 w-4" />
-                              </Button>
-                              <Button size="icon" variant="outline" onClick={() => handleNotifications(project)}>
-                                <Bell className="h-4 w-4" />
                               </Button>
                             </div>
                           </TableCell>
@@ -387,7 +286,7 @@ const Index = () => {
               </CardContent>
               <CardFooter>
                 <div className="text-xs text-muted-foreground">
-                  Showing <strong>{sortedProjects.filter(project => status === "all" || project.project_status === status).length}</strong> {status} projects
+                  Showing <strong>{projects.filter(project => status === "all" || project.project_status === status).length}</strong> {status} projects
                 </div>
               </CardFooter>
             </Card>
