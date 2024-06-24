@@ -1,27 +1,6 @@
-import {
-  File,
-  Home,
-  LineChart,
-  ListFilter,
-  MoreHorizontal,
-  Package,
-  Package2,
-  PanelLeft,
-  PlusCircle,
-  Search,
-  Settings,
-  ShoppingCart,
-  Users2,
-} from "lucide-react"
-
-import { Badge } from "@/components/ui/badge"
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb"
+import React from 'react';
+import { useProjects } from '@/integrations/supabase/index.js';
+import { PlusCircle, ListFilter, File } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -64,6 +43,10 @@ import {
 } from "@/components/ui/tooltip"
 
 const Index = () => {
+  const { data: projects, error, isLoading } = useProjects();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>Error loading projects: {error.message}</div>;
   return (
     <div className="p-4">
     <Tabs defaultValue="all">
@@ -107,7 +90,7 @@ const Index = () => {
           <Button size="sm" className="h-8 gap-1">
             <PlusCircle className="h-3.5 w-3.5" />
             <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
-              Add Product
+              Add Project
             </span>
           </Button>
         </div>
@@ -115,18 +98,38 @@ const Index = () => {
       <TabsContent value="all">
         <Card x-chunk="dashboard-06-chunk-0">
           <CardHeader>
-            <CardTitle>Products</CardTitle>
+            <CardTitle>Projects</CardTitle>
             <CardDescription>
-              Manage your products and view their sales performance.
+              Manage your projects and view their details.
             </CardDescription>
           </CardHeader>
           <CardContent>
-          {/* <!-- ADD MOST OF THE CODE HERE --> */}
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Project Name</TableHead>
+                <TableHead>Description</TableHead>
+                <TableHead>Start Date</TableHead>
+                <TableHead>End Date</TableHead>
+                <TableHead>Status</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {projects.map((project) => (
+                <TableRow key={project.project_id}>
+                  <TableCell>{project.project_name}</TableCell>
+                  <TableCell>{project.project_description}</TableCell>
+                  <TableCell>{project.start_date}</TableCell>
+                  <TableCell>{project.end_date}</TableCell>
+                  <TableCell>{project.project_status}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
           </CardContent>
           <CardFooter>
             <div className="text-xs text-muted-foreground">
-              Showing <strong>1-10</strong> of <strong>32</strong>{" "}
-              products
+              Showing <strong>{projects.length}</strong> projects
             </div>
           </CardFooter>
         </Card>
