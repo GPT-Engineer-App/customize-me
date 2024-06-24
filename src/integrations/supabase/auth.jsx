@@ -49,8 +49,14 @@ export const SupabaseAuthProviderInner = ({ children }) => {
     setLoading(false);
   };
 
+  const updateProfile = async (profile) => {
+    const { data, error } = await supabase.from('users').update(profile).eq('id', session.user.id);
+    if (error) throw error;
+    setSession({ ...session, user: { ...session.user, ...profile } });
+  };
+
   return (
-    <SupabaseAuthContext.Provider value={{ session, loading, logout }}>
+    <SupabaseAuthContext.Provider value={{ session, loading, logout, updateProfile }}>
       {children}
     </SupabaseAuthContext.Provider>
   );
