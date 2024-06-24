@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useProjects, useAddProject, useUpdateProject, useDeleteProject } from '@/integrations/supabase/client.js';
+import { useProjects, useAddProject, useUpdateProject, useDeleteProject } from '@/integrations/supabase/index.js';
 import { PlusCircle, ListFilter, File, Edit, Trash } from 'lucide-react';
 import { Button } from "@/components/ui/button"
 import {

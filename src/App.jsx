@@ -1,5 +1,5 @@
 import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
-import Projects from "./pages/Projects.jsx";
+import Index from "./pages/Index.jsx";
 import SharedLayout from "./components/SharedLayout.jsx";
 import Login from "./pages/Login.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
@@ -17,7 +17,7 @@ function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <Projects />
+                <Index />
               </ProtectedRoute>
             }
           />

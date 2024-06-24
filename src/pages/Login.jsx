@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSupabaseAuth, SupabaseAuthUI } from '@/integrations/supabase/auth/index.jsx';
+import { useSupabaseAuth, SupabaseAuthUI } from '@/integrations/supabase/auth.jsx';
 
 const Login = () => {
   const { session } = useSupabaseAuth();
