@@ -34,15 +34,17 @@ const fromSupabase = async (query) => {
 
 | name                | type        | format | required |
 |---------------------|-------------|--------|----------|
-| project_id          | int4        | number | true     |
+| project_id          | integer     | number | true     |
 | project_name        | varchar     | string | true     |
 | project_description | text        | string | false    |
 | start_date          | date        | string | true     |
 | end_date            | date        | string | false    |
 | project_status      | varchar     | string | true     |
+| user_id             | uuid        | string | false    |
 
 */
 
+// Hooks for profile table
 export const useProfiles = () => useQuery({
     queryKey: ['profiles'],
     queryFn: () => fromSupabase(supabase.from('profile').select('*')),
@@ -83,6 +85,7 @@ export const useDeleteProfile = () => {
     });
 };
 
+// Hooks for project table
 export const useProjects = () => useQuery({
     queryKey: ['projects'],
     queryFn: () => fromSupabase(supabase.from('project').select('*')),
@@ -123,6 +126,7 @@ export const useDeleteProject = () => {
     });
 };
 
+// Hooks for users table
 export const useUsers = () => useQuery({
     queryKey: ['users'],
     queryFn: () => fromSupabase(supabase.from('users').select('*')),
