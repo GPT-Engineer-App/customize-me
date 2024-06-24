@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useProjects, useAddProject, useUpdateProject, useDeleteProject } from '@/integrations/supabase/index.js';
 import { PlusCircle, ListFilter, File, Edit, Trash } from 'lucide-react';
 import { Button } from "@/components/ui/button"
@@ -42,6 +42,7 @@ const Index = () => {
   const updateProject = useUpdateProject();
   const deleteProject = useDeleteProject();
   const [selectedProject, setSelectedProject] = useState(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const { register, handleSubmit, reset, formState: { errors } } = useForm({
     resolver: zodResolver(projectSchema),
@@ -57,11 +58,13 @@ const Index = () => {
     }
     reset();
     setSelectedProject(null);
+    setIsDialogOpen(false); // Close the dialog
   };
 
   const handleEdit = (project) => {
     setSelectedProject(project);
     reset(project);
+    setIsDialogOpen(true); // Open the dialog
   };
 
   const handleDelete = async (projectId) => {
@@ -112,9 +115,9 @@ const Index = () => {
                 Export
               </span>
             </Button>
-            <Dialog>
+            <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" className="h-8 gap-1">
+                <Button size="sm" className="h-8 gap-1" onClick={() => setIsDialogOpen(true)}>
                   <PlusCircle className="h-3.5 w-3.5" />
                   <span className="sr-only sm:not-sr-only sm:whitespace-nowrap">
                     Add Project
