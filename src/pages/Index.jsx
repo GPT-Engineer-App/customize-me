@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useProjects, useAddProject, useUpdateProject, useDeleteProject } from '@/integrations/supabase/index.js';
 import { PlusCircle, ListFilter, File, Edit, Trash } from 'lucide-react';
 import { Button } from "@/components/ui/button"
@@ -226,6 +226,156 @@ const Index = () => {
             <CardFooter>
               <div className="text-xs text-muted-foreground">
                 Showing <strong>{projects.length}</strong> projects
+              </div>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        <TabsContent value="active">
+          <Card x-chunk="dashboard-06-chunk-0">
+            <CardHeader>
+              <CardTitle>Active Projects</CardTitle>
+              <CardDescription>
+                Manage your active projects and view their details.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Project Name</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>End Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {projects.filter(project => project.project_status === 'active').map((project) => (
+                    <TableRow key={project.project_id}>
+                      <TableCell>{project.project_name}</TableCell>
+                      <TableCell>{project.project_description}</TableCell>
+                      <TableCell>{project.start_date}</TableCell>
+                      <TableCell>{project.end_date}</TableCell>
+                      <TableCell>{project.project_status}</TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button size="icon" variant="outline" onClick={() => handleEdit(project)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button size="icon" variant="outline" onClick={() => handleDelete(project.project_id)}>
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+            <CardFooter>
+              <div className="text-xs text-muted-foreground">
+                Showing <strong>{projects.filter(project => project.project_status === 'active').length}</strong> active projects
+              </div>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        <TabsContent value="draft">
+          <Card x-chunk="dashboard-06-chunk-0">
+            <CardHeader>
+              <CardTitle>Draft Projects</CardTitle>
+              <CardDescription>
+                Manage your draft projects and view their details.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Project Name</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>End Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {projects.filter(project => project.project_status === 'draft').map((project) => (
+                    <TableRow key={project.project_id}>
+                      <TableCell>{project.project_name}</TableCell>
+                      <TableCell>{project.project_description}</TableCell>
+                      <TableCell>{project.start_date}</TableCell>
+                      <TableCell>{project.end_date}</TableCell>
+                      <TableCell>{project.project_status}</TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button size="icon" variant="outline" onClick={() => handleEdit(project)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button size="icon" variant="outline" onClick={() => handleDelete(project.project_id)}>
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+            <CardFooter>
+              <div className="text-xs text-muted-foreground">
+                Showing <strong>{projects.filter(project => project.project_status === 'draft').length}</strong> draft projects
+              </div>
+            </CardFooter>
+          </Card>
+        </TabsContent>
+        <TabsContent value="archived">
+          <Card x-chunk="dashboard-06-chunk-0">
+            <CardHeader>
+              <CardTitle>Archived Projects</CardTitle>
+              <CardDescription>
+                Manage your archived projects and view their details.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>Project Name</TableHead>
+                    <TableHead>Description</TableHead>
+                    <TableHead>Start Date</TableHead>
+                    <TableHead>End Date</TableHead>
+                    <TableHead>Status</TableHead>
+                    <TableHead>Actions</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  {projects.filter(project => project.project_status === 'archived').map((project) => (
+                    <TableRow key={project.project_id}>
+                      <TableCell>{project.project_name}</TableCell>
+                      <TableCell>{project.project_description}</TableCell>
+                      <TableCell>{project.start_date}</TableCell>
+                      <TableCell>{project.end_date}</TableCell>
+                      <TableCell>{project.project_status}</TableCell>
+                      <TableCell>
+                        <div className="flex space-x-2">
+                          <Button size="icon" variant="outline" onClick={() => handleEdit(project)}>
+                            <Edit className="h-4 w-4" />
+                          </Button>
+                          <Button size="icon" variant="outline" onClick={() => handleDelete(project.project_id)}>
+                            <Trash className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </CardContent>
+            <CardFooter>
+              <div className="text-xs text-muted-foreground">
+                Showing <strong>{projects.filter(project => project.project_status === 'archived').length}</strong> archived projects
               </div>
             </CardFooter>
           </Card>
