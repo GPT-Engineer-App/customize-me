@@ -1,5 +1,5 @@
 import React from 'react';
-import { useUsers } from '@/integrations/supabase/index.js';
+import { useUsers } from '@/integrations/supabase/client.js';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 const Users = () => {
