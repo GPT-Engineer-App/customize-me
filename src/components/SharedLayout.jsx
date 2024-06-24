@@ -68,11 +68,13 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import { useSupabaseAuth } from "@/integrations/supabase/auth.jsx";
 
 const SharedLayout = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const [isSheetOpen, setIsSheetOpen] = useState(false);
+  const { session, logout } = useSupabaseAuth();
 
   const generateBreadcrumbs = () => {
     const pathnames = location.pathname.split("/").filter((x) => x);
@@ -80,6 +82,11 @@ const SharedLayout = () => {
       const to = `/${pathnames.slice(0, index + 1).join("/")}`;
       return { name: value.charAt(0).toUpperCase() + value.slice(1), to };
     });
+  };
+
+  const handleLogout = async () => {
+    await logout();
+    navigate("/login");
   };
 
   return (
@@ -239,7 +246,11 @@ const SharedLayout = () => {
               <DropdownMenuItem>Settings</DropdownMenuItem>
               <DropdownMenuItem>Support</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              {session ? (
+                <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem onClick={() => navigate('/login')}>Login</DropdownMenuItem>
+              )}
             </DropdownMenuContent>
           </DropdownMenu>
         </header>
